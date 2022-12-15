@@ -1,9 +1,14 @@
-use std::ops::{Index, IndexMut};
+use std::{
+    ops::{Index, IndexMut},
+    slice,
+};
+
+use crate::iterator::Iter;
 
 #[derive(Clone)]
 pub struct Array<T, const D: usize> {
-    size: [usize; D],
-    data: Vec<T>,
+    pub(crate) size: [usize; D],
+    pub(crate) data: Vec<T>,
 }
 
 impl<T: Default + Clone, const D: usize> Array<T, D> {
@@ -25,14 +30,10 @@ impl<T: Default + Clone, const D: usize> Array<T, D> {
         for dim in size {
             l *= dim;
         }
-        let mut r = Self {
+        Self {
             size,
-            data: Vec::new(),
-        };
-        for _ in 0..l {
-            r.data.push(item.clone());
+            data: vec![item; l],
         }
-        r
     }
 }
 
@@ -80,34 +81,12 @@ impl<'a, T, const D: usize> Array<T, D> {
         self.data.get(real_loc)
     }
 
-    pub fn iterable(&self) -> Vec<([usize; D], &T)> {
-        self.data
-            .iter()
-            .enumerate()
-            .map(|(mut idx, x)| {
-                let mut loc = [0usize; D];
-                for (i, dim) in self.size.iter().enumerate() {
-                    loc[i] = idx % dim;
-                    idx /= dim;
-                }
-                (loc, x)
-            })
-            .collect::<Vec<_>>()
+    pub fn iter(&mut self) -> Iter<slice::Iter<T>, D> {
+        Iter::new(self)
     }
 
-    pub fn iterable_mut(&mut self) -> Vec<([usize; D], &mut T)> {
-        self.data
-            .iter_mut()
-            .enumerate()
-            .map(|(mut idx, x)| {
-                let mut loc = [0usize; D];
-                for (i, dim) in self.size.iter().enumerate() {
-                    loc[i] = idx % dim;
-                    idx /= dim;
-                }
-                (loc, x)
-            })
-            .collect::<Vec<_>>()
+    pub fn iter_mut(&mut self) -> Iter<slice::IterMut<T>, D> {
+        Iter::new_mut(self)
     }
 }
 
@@ -153,8 +132,7 @@ mod test {
     fn iterator() {
         let mut array = Array::new_with([5, 4], 0);
         array
-            .iterable_mut()
-            .into_iter()
+            .iter_mut()
             .filter(|(loc, _)| loc[0] == 0)
             .for_each(|x| {
                 println!("{x:?}");
@@ -167,11 +145,7 @@ mod test {
             println!();
         }
         assert_eq!(
-            array
-                .iterable()
-                .into_iter()
-                .map(|x| *x.1)
-                .collect::<Vec<_>>(),
+            array.iter().map(|x| *x.1).collect::<Vec<_>>(),
             vec![0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 3, 0, 0, 0, 0]
         )
     }

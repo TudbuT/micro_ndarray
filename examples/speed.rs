@@ -1,12 +1,14 @@
+use std::time::SystemTime;
+
 use micro_ndarray::Array;
 
 fn main() {
-    let mut array = Array::new_with([5, 4], 0);
+    let t = SystemTime::now();
+    let mut array = Array::new_with([5000, 4000], 0);
     array
         .iter_mut()
         .filter(|(loc, _)| loc[0] == 1)
         .for_each(|x| {
-            println!("{x:?}");
             *x.1 += x.0[1];
         });
     for y in 0..4 {
@@ -15,8 +17,8 @@ fn main() {
         }
         println!();
     }
-    assert_eq!(
-        array.iter().map(|x| *x.1).collect::<Vec<_>>(),
-        vec![0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 3, 0, 0, 0]
-    )
+    println!(
+        "Took {}ms.",
+        SystemTime::now().duration_since(t).unwrap().as_millis()
+    );
 }
