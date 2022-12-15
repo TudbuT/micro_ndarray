@@ -1,6 +1,6 @@
 use criterion::{criterion_group, criterion_main, Criterion};
 
-use micro_ndarray::Array;
+use micro_ndarray::Array as MicroArray;
 use ndarray::Array2;
 
 fn criterion_benchmark(c: &mut Criterion) {
@@ -12,12 +12,12 @@ criterion_group!(benches, criterion_benchmark);
 criterion_main!(benches);
 
 fn micro_ndarry() {
-    let mut array = Array::new_with([5000, 4000], 0);
+    let mut array = MicroArray::new_with([5000, 4000], 0);
     array
         .iter_mut()
-        .filter(|(loc, _)| loc[0] == 1)
-        .for_each(|x| 
-            *x.1 += x.0[1]
+        .filter(|([x, _], _)| x == &1)
+        .for_each(|([_, y], ele)| 
+            *ele += y
         );
 
     for y in 0..4 {
