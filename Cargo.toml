@@ -1,0 +1,11 @@
+[package]
+name = "micro_ndarray"
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/tudbut/micro_ndarray"
+license = "MIT"
+description = "Very small multi-dimensional-array implementation"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
