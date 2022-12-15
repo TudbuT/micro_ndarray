@@ -9,3 +9,11 @@ description = "Very small multi-dimensional-array implementation"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+
+[dev-dependencies]
+ndarray = "0.15.6"
+criterion = "0.4"
+
+[[bench]]
+name = "benchmarks"
+harness = false
