@@ -45,14 +45,16 @@ impl<I: Iterator, const D: usize> Iter<I, D> {
             }
             3 => {
                 self.ptr[0] += 1;
-                if self.ptr[0] == self.size[0] {
-                    self.ptr[0] = 0;
-                    self.ptr[1] += 1;
+                if self.ptr[0] != self.size[0] {
+                    return;
                 }
-                if self.ptr[1] == self.size[1] {
-                    self.ptr[1] = 0;
-                    self.ptr[2] += 1;
+                self.ptr[0] = 0;
+                self.ptr[1] += 1;
+                if self.ptr[1] != self.size[1] {
+                    return;
                 }
+                self.ptr[1] = 0;
+                self.ptr[2] += 1;
             }
             _ => {
                 #[allow(clippy::needless_range_loop)] // clippy bug
