@@ -32,13 +32,38 @@ impl<I: Iterator, const D: usize> Iter<I, D> {
     #[inline]
     fn increment_ptr(&mut self) {
         // propagate change
-        #[allow(clippy::needless_range_loop)] // clippy bug
-        for n in 0..D {
-            self.ptr[n] += 1;
-            if self.ptr[n] == self.size[n] {
-                self.ptr[n] = 0;
-            } else {
-                break;
+        // match common lengths
+        match D {
+            0 => panic!("invalid array dimensions: 0"),
+            1 => self.ptr[0] += 1,
+            2 => {
+                self.ptr[0] += 1;
+                if self.ptr[0] == self.size[0] {
+                    self.ptr[0] = 0;
+                    self.ptr[1] += 1;
+                }
+            }
+            3 => {
+                self.ptr[0] += 1;
+                if self.ptr[0] == self.size[0] {
+                    self.ptr[0] = 0;
+                    self.ptr[1] += 1;
+                }
+                if self.ptr[1] == self.size[1] {
+                    self.ptr[1] = 0;
+                    self.ptr[2] += 1;
+                }
+            }
+            _ => {
+                #[allow(clippy::needless_range_loop)] // clippy bug
+                for n in 0..D {
+                    self.ptr[n] += 1;
+                    if self.ptr[n] == self.size[n] {
+                        self.ptr[n] = 0;
+                    } else {
+                        break;
+                    }
+                }
             }
         }
     }

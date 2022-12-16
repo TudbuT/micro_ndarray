@@ -1,7 +1,4 @@
-use std::{
-    ops::{Index, IndexMut},
-    slice,
-};
+use std::{ops::{Index, IndexMut}, slice};
 
 use crate::iterator::Iter;
 
@@ -57,28 +54,76 @@ impl<'a, T, const D: usize> Array<T, D> {
         self.size
     }
 
-    pub fn get_mut(&'a mut self, loc: [usize; D]) -> Option<&'a mut T> {
-        let mut real_loc = 0;
-        for (i, dim) in loc.iter().enumerate() {
-            if i == 0 {
-                real_loc += dim;
-                continue;
-            }
-            real_loc += dim * self.size[i - 1];
-        }
-        self.data.get_mut(real_loc)
+    pub fn get(&'a self, loc: [usize; D]) -> Option<&'a T> {
+        self.internal_get(loc, false)
     }
 
-    pub fn get(&'a self, loc: [usize; D]) -> Option<&'a T> {
+    #[inline]
+    fn internal_get(&'a self, loc: [usize; D], panic: bool) -> Option<&'a T> {
         let mut real_loc = 0;
         for (i, dim) in loc.iter().enumerate() {
+            let mut dim = *dim;
+            if dim >= self.size[i] {
+                if panic {
+                    panic!(
+                        "Array index of dimension {} is out of bounds! 0..{}.contains({}) == false",
+                        i + 1,
+                        self.size[i],
+                        dim
+                    )
+                } else {
+                    return None;
+                }
+            }
             if i == 0 {
                 real_loc += dim;
                 continue;
             }
-            real_loc += dim * self.size[i - 1];
+            for s in &self.size[0..i] {
+                dim *= s;
+            }
+            real_loc += dim;
         }
-        self.data.get(real_loc)
+        unsafe {
+            // SAFETY this is checked in the previous lines
+            Some(self.data.get_unchecked(real_loc))
+        }
+    }
+
+    pub fn get_mut(&'a mut self, loc: [usize; D]) -> Option<&'a mut T> {
+        self.internal_get_mut(loc, false)
+    }
+
+    #[inline]
+    fn internal_get_mut(&'a mut self, loc: [usize; D], panic: bool) -> Option<&'a mut T> {
+        let mut real_loc = 0;
+        for (i, dim) in loc.iter().enumerate() {
+            let mut dim = *dim;
+            if dim >= self.size[i] {
+                if panic {
+                    panic!(
+                        "Array index of dimension {} is out of bounds! 0..{}.contains({}) == false",
+                        i + 1,
+                        self.size[i],
+                        dim
+                    )
+                } else {
+                    return None;
+                }
+            }
+            if i == 0 {
+                real_loc += dim;
+                continue;
+            }
+            for s in &self.size[0..i] {
+                dim *= s;
+            }
+            real_loc += dim;
+        }
+        unsafe {
+            // SAFETY this is checked in the previous lines
+            Some(self.data.get_unchecked_mut(real_loc))
+        }
     }
 
     pub fn iter(&mut self) -> Iter<slice::Iter<T>, D> {
@@ -94,33 +139,15 @@ impl<T, const D: usize> Index<[usize; D]> for Array<T, D> {
     type Output = T;
 
     fn index(&self, index: [usize; D]) -> &Self::Output {
-        for (i, dim) in index.iter().enumerate() {
-            if *dim >= self.size[i] {
-                panic!(
-                    "Array index of dimension {} is out of bounds! 0..{}.contains({}) == false",
-                    i + 1,
-                    self.size[i],
-                    dim
-                )
-            }
-        }
-        self.get(index).unwrap() // SAFETY this is checked in the previous lines
+        // SAFETY this unwrap can not panic due to panic:true in the args of internal_get
+        self.internal_get(index, true).unwrap()
     }
 }
 
 impl<T, const D: usize> IndexMut<[usize; D]> for Array<T, D> {
     fn index_mut(&mut self, index: [usize; D]) -> &mut T {
-        for (i, dim) in index.iter().enumerate() {
-            if *dim >= self.size[i] {
-                panic!(
-                    "Array index of dimension {} is out of bounds! 0..{}.contains({}) == false",
-                    i + 1,
-                    self.size[i],
-                    dim
-                )
-            }
-        }
-        self.get_mut(index).unwrap() // SAFETY this is checked in the previous lines
+        // SAFETY this unwrap can not panic due to panic:true in the args of internal_get_mut
+        self.internal_get_mut(index, true).unwrap()
     }
 }
 
