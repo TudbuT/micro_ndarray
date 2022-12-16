@@ -13,6 +13,12 @@ arrays. However, this changes in 7D, as ndarray only has a man-made fast impleme
 in smaller dimensions, but much, much faster in higher dimensions. micro_ndarray only has few 
 dimension-dependent optimizations and only for 1D, 2D, and 3D.
 
+All benchmarks were run on:
+```
+CPU: Intel i5-2400 (4) @ 3.400GHz
+Memory: 15939MiB
+```
+
 In short:
 ```
 micro_ndarry            time:   [24.460 ms 24.602 ms 24.777 ms]
