@@ -50,6 +50,21 @@ impl<'a, T, const D: usize> Array<T, D> {
         r
     }
 
+    pub fn new_by_enumeration<F: Fn(usize) -> T>(size: [usize; D], supplier: F) -> Self {
+        let mut l = 1;
+        for dim in size {
+            l *= dim;
+        }
+        let mut r = Self {
+            size,
+            data: Vec::new(),
+        };
+        for i in 0..l {
+            r.data.push(supplier(i));
+        }
+        r
+    }
+
     pub fn size(&self) -> [usize; D] {
         self.size
     }
