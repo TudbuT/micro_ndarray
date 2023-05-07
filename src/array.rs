@@ -1,21 +1,28 @@
-use std::{ops::{Index, IndexMut}, slice};
+use std::{
+    ops::{Index, IndexMut},
+    slice,
+};
 
 use crate::iterator::Iter;
 
 #[derive(Clone)]
 pub struct Array<T, const D: usize> {
     pub(crate) size: [usize; D],
+    pub(crate) stride: [usize; D],
     pub(crate) data: Vec<T>,
 }
 
 impl<T: Default + Clone, const D: usize> Array<T, D> {
     pub fn new(size: [usize; D]) -> Self {
         let mut l = 1;
-        for dim in size {
+        let mut stride = [0usize; D];
+        for (i, dim) in size.into_iter().enumerate() {
             l *= dim;
+            stride[i] = l;
         }
         Self {
             size,
+            stride,
             data: vec![T::default(); l],
         }
     }
@@ -24,11 +31,14 @@ impl<T: Default + Clone, const D: usize> Array<T, D> {
 impl<T: Default + Clone, const D: usize> Array<T, D> {
     pub fn new_with(size: [usize; D], item: T) -> Self {
         let mut l = 1;
-        for dim in size {
+        let mut stride = [0usize; D];
+        for (i, dim) in size.into_iter().enumerate() {
             l *= dim;
+            stride[i] = l;
         }
         Self {
             size,
+            stride,
             data: vec![item; l],
         }
     }
@@ -37,11 +47,14 @@ impl<T: Default + Clone, const D: usize> Array<T, D> {
 impl<'a, T, const D: usize> Array<T, D> {
     pub fn new_by<F: Fn() -> T>(size: [usize; D], supplier: F) -> Self {
         let mut l = 1;
-        for dim in size {
+        let mut stride = [0usize; D];
+        for (i, dim) in size.into_iter().enumerate() {
             l *= dim;
+            stride[i] = l;
         }
         let mut r = Self {
             size,
+            stride,
             data: Vec::new(),
         };
         for _ in 0..l {
@@ -52,11 +65,14 @@ impl<'a, T, const D: usize> Array<T, D> {
 
     pub fn new_by_enumeration<F: Fn(usize) -> T>(size: [usize; D], supplier: F) -> Self {
         let mut l = 1;
-        for dim in size {
+        let mut stride = [0usize; D];
+        for (i, dim) in size.into_iter().enumerate() {
             l *= dim;
+            stride[i] = l;
         }
         let mut r = Self {
             size,
+            stride,
             data: Vec::new(),
         };
         for i in 0..l {
@@ -94,9 +110,7 @@ impl<'a, T, const D: usize> Array<T, D> {
                 real_loc += dim;
                 continue;
             }
-            for s in &self.size[0..i] {
-                dim *= s;
-            }
+            dim *= self.stride[i];
             real_loc += dim;
         }
         unsafe {
@@ -130,9 +144,7 @@ impl<'a, T, const D: usize> Array<T, D> {
                 real_loc += dim;
                 continue;
             }
-            for s in &self.size[0..i] {
-                dim *= s;
-            }
+            dim *= self.stride[i];
             real_loc += dim;
         }
         unsafe {
