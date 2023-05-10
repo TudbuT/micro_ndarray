@@ -1,4 +1,7 @@
-use std::{ops::{Index, IndexMut}, slice};
+use std::{
+    ops::{Index, IndexMut},
+    slice,
+};
 
 use crate::iterator::Iter;
 
@@ -105,6 +108,22 @@ impl<'a, T, const D: usize> Array<T, D> {
         }
     }
 
+    pub unsafe fn get_unchecked(&'a self, loc: [usize; D]) -> &'a T {
+        let mut real_loc = 0;
+        for (i, dim) in loc.iter().enumerate() {
+            let mut dim = *dim;
+            if i == 0 {
+                real_loc += dim;
+                continue;
+            }
+            for s in &self.size[0..i] {
+                dim *= s;
+            }
+            real_loc += dim;
+        }
+        self.data.get_unchecked(real_loc)
+    }
+
     pub fn get_mut(&'a mut self, loc: [usize; D]) -> Option<&'a mut T> {
         self.internal_get_mut(loc, false)
     }
@@ -139,6 +158,22 @@ impl<'a, T, const D: usize> Array<T, D> {
             // SAFETY this is checked in the previous lines
             Some(self.data.get_unchecked_mut(real_loc))
         }
+    }
+
+    pub unsafe fn get_unchecked_mut(&'a mut self, loc: [usize; D]) -> &'a mut T {
+        let mut real_loc = 0;
+        for (i, dim) in loc.iter().enumerate() {
+            let mut dim = *dim;
+            if i == 0 {
+                real_loc += dim;
+                continue;
+            }
+            for s in &self.size[0..i] {
+                dim *= s;
+            }
+            real_loc += dim;
+        }
+        self.data.get_unchecked_mut(real_loc)
     }
 
     pub fn iter(&mut self) -> Iter<slice::Iter<T>, D> {
