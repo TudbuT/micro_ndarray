@@ -55,7 +55,7 @@ impl<'a, T, const D: usize> Array<T, D> {
         let mut r = Self {
             size,
             stride,
-            data: Vec::new(),
+            data: Vec::with_capacity(l),
         };
         for _ in 0..l {
             r.data.push(supplier());
@@ -73,7 +73,7 @@ impl<'a, T, const D: usize> Array<T, D> {
         let mut r = Self {
             size,
             stride,
-            data: Vec::new(),
+            data: Vec::with_capacity(l),
         };
         for i in 0..l {
             r.data.push(supplier(i));
