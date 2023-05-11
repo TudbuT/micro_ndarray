@@ -127,9 +127,7 @@ impl<'a, T, const D: usize> Array<T, D> {
                 real_loc += dim;
                 continue;
             }
-            for s in &self.size[0..i] {
-                dim *= s;
-            }
+            dim *= self.stride[i];
             real_loc += dim;
         }
         self.data.get_unchecked(real_loc)
@@ -177,9 +175,7 @@ impl<'a, T, const D: usize> Array<T, D> {
                 real_loc += dim;
                 continue;
             }
-            for s in &self.size[0..i] {
-                dim *= s;
-            }
+            dim *= self.stride[i];
             real_loc += dim;
         }
         self.data.get_unchecked_mut(real_loc)
