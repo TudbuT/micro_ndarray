@@ -17,8 +17,8 @@ impl<T: Default + Clone, const D: usize> Array<T, D> {
         let mut l = 1;
         let mut stride = [0usize; D];
         for (i, dim) in size.into_iter().enumerate() {
-            l *= dim;
             stride[i] = l;
+            l *= dim;
         }
         Self {
             size,
@@ -33,8 +33,8 @@ impl<T: Default + Clone, const D: usize> Array<T, D> {
         let mut l = 1;
         let mut stride = [0usize; D];
         for (i, dim) in size.into_iter().enumerate() {
-            l *= dim;
             stride[i] = l;
+            l *= dim;
         }
         Self {
             size,
@@ -49,8 +49,8 @@ impl<'a, T, const D: usize> Array<T, D> {
         let mut l = 1;
         let mut stride = [0usize; D];
         for (i, dim) in size.into_iter().enumerate() {
-            l *= dim;
             stride[i] = l;
+            l *= dim;
         }
         let mut r = Self {
             size,
@@ -67,8 +67,8 @@ impl<'a, T, const D: usize> Array<T, D> {
         let mut l = 1;
         let mut stride = [0usize; D];
         for (i, dim) in size.into_iter().enumerate() {
-            l *= dim;
             stride[i] = l;
+            l *= dim;
         }
         let mut r = Self {
             size,
