@@ -181,7 +181,7 @@ impl<'a, T, const D: usize> Array<T, D> {
         self.data.get_unchecked_mut(real_loc)
     }
 
-    pub fn iter(&mut self) -> Iter<slice::Iter<T>, D> {
+    pub fn iter(&self) -> Iter<slice::Iter<T>, D> {
         Iter::new(self)
     }
 
