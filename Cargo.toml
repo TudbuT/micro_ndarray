@@ -1,6 +1,6 @@
 [package]
 name = "micro_ndarray"
-version = "0.2.8"
+version = "0.3.0"
 edition = "2021"
 repository = "https://github.com/tudbut/micro_ndarray"
 license = "MIT"
@@ -9,6 +9,7 @@ description = "Very small multi-dimensional-array implementation"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+vec_split = { version = "0.1.0", optional = true }
 
 [dev-dependencies]
 ndarray = "0.15.6"
@@ -17,3 +18,7 @@ criterion = "0.4"
 [[bench]]
 name = "benchmarks"
 harness = false
+
+[features]
+default = [ "vec_split" ]
+vec_split = [ "dep:vec_split" ]
