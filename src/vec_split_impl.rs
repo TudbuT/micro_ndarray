@@ -1,4 +1,7 @@
-use vec_split::{RawVector, SizedVectorArray, Vector, VectorArray};
+use vec_split::{
+    accessors::{Accessor, AccessorMut},
+    RawVector, SizedVectorArray, Vector, VectorArray,
+};
 
 use crate::Array;
 
@@ -38,5 +41,16 @@ impl<T, const D: usize, V: RawVector<T, D>> SizedVectorArray<T, D, V, [usize; D]
             real_loc += dim;
         }
         real_loc
+    }
+}
+
+impl<'a, T, const D: usize> Accessor<T, [usize; D]> for Array<T, D> {
+    fn get<'b>(&'b self, index: [usize; D]) -> Option<&'b T> {
+        <Array<T, D>>::get(self, index)
+    }
+}
+impl<'a, T, const D: usize> AccessorMut<T, [usize; D]> for Array<T, D> {
+    fn get_mut<'b>(&'b mut self, index: [usize; D]) -> Option<&'b mut T> {
+        <Array<T, D>>::get_mut(self, index)
     }
 }

@@ -288,7 +288,7 @@ dependencies = [
 
 [[package]]
 name = "micro_ndarray"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "criterion",
  "ndarray",
@@ -540,9 +540,9 @@ checksum = "e5464a87b239f13a63a501f2701565754bae92d243d4bb7eb12f6d57d2269bf4"
 
 [[package]]
 name = "vec_split"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "160ba5114d7dad1e44e557f95935173aa4c678018328aa6c642a621b168899ac"
+checksum = "fd63fa7ea5a7aa0dc8fb3f1893a1816d53d5b9311188edbd0d3984190bb8d77c"
 
 [[package]]
 name = "walkdir"
