@@ -288,7 +288,7 @@ dependencies = [
 
 [[package]]
 name = "micro_ndarray"
-version = "0.3.1"
+version = "0.3.3"
 dependencies = [
  "criterion",
  "ndarray",

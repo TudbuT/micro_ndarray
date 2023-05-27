@@ -14,21 +14,11 @@ pub struct Array<T, const D: usize> {
 
 impl<T: Default + Clone, const D: usize> Array<T, D> {
     pub fn new(size: [usize; D]) -> Self {
-        let mut l = 1;
-        let mut stride = [0usize; D];
-        for (i, dim) in size.into_iter().enumerate() {
-            stride[i] = l;
-            l *= dim;
-        }
-        Self {
-            size,
-            stride,
-            data: vec![T::default(); l],
-        }
+        Self::new_with(size, T::default())
     }
 }
 
-impl<T: Default + Clone, const D: usize> Array<T, D> {
+impl<T: Clone, const D: usize> Array<T, D> {
     pub fn new_with(size: [usize; D], item: T) -> Self {
         let mut l = 1;
         let mut stride = [0usize; D];
