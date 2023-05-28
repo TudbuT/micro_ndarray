@@ -180,18 +180,18 @@ impl<'a, T, const D: usize> Array<T, D> {
     }
 
     /// Flattens the ND Array into a 1D Array with indexing `x + y * size_x + z * size_x * size_y` etc. This is a zero-cost operation.
-    pub fn into_flatten(self) -> Vec<T> {
+    pub fn into_flattened(self) -> Vec<T> {
         self.data
     }
 
     /// Flattens the ND Array into a 1D Array with indexing `x + y * size_x + z * size_x * size_y` etc. This is a zero-cost operation.
-    pub fn as_flattened(&self) -> &Vec<T> {
-        &self.data
+    pub fn as_flattened(&self) -> &[T] {
+        self.data.as_slice()
     }
 
     /// Flattens the ND Array into a 1D Array with indexing `x + y * size_x + z * size_x * size_y` etc. This is a zero-cost operation.
-    pub fn as_flattened_mut(&mut self) -> &mut Vec<T> {
-        &mut self.data
+    pub fn as_flattened_mut(&mut self) -> &mut [T] {
+        self.data.as_mut_slice()
     }
 
     /// Reinterprets a 1D array as an ND Array with indexing `x + y * size_x + z * size_x * size_y` etc. This is a zero-cost operation.
