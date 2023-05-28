@@ -1,0 +1,15 @@
+[package]
+name = "micro_ndarray_BENCH"
+version = "0.0.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dev-dependencies]
+micro_ndarray = { path = ".." }
+ndarray = "0.15.6"
+criterion = "0.4"
+
+[[bench]]
+name = "benchmarks"
+harness = false

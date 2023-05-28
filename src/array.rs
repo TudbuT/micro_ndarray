@@ -178,6 +178,36 @@ impl<'a, T, const D: usize> Array<T, D> {
     pub fn iter_mut(&mut self) -> Iter<slice::IterMut<T>, D> {
         Iter::new_mut(self)
     }
+
+    /// Flattens the ND Array into a 1D Array with indexing `x + y * size_x + z * size_x * size_y` etc. This is a zero-cost operation.
+    pub fn into_flatten(self) -> Vec<T> {
+        self.data
+    }
+
+    /// Flattens the ND Array into a 1D Array with indexing `x + y * size_x + z * size_x * size_y` etc. This is a zero-cost operation.
+    pub fn as_flattened(&self) -> &Vec<T> {
+        &self.data
+    }
+
+    /// Flattens the ND Array into a 1D Array with indexing `x + y * size_x + z * size_x * size_y` etc. This is a zero-cost operation.
+    pub fn as_flattened_mut(&mut self) -> &mut Vec<T> {
+        &mut self.data
+    }
+
+    /// Reinterprets a 1D array as an ND Array with indexing `x + y * size_x + z * size_x * size_y` etc. This is a zero-cost operation.
+    pub fn from_flat(array: Vec<T>, size: [usize; D]) -> Self {
+        let mut l = 1;
+        let mut stride = [0usize; D];
+        for (i, dim) in size.into_iter().enumerate() {
+            stride[i] = l;
+            l *= dim;
+        }
+        Self {
+            data: array,
+            size,
+            stride,
+        }
+    }
 }
 
 impl<T, const D: usize> Index<[usize; D]> for Array<T, D> {

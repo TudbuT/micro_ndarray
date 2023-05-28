@@ -1,2 +1,4 @@
 /target
 .vscode
+/benchmarking/target
+/benchmarking/.vscode
