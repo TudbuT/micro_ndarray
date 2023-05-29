@@ -1,6 +1,8 @@
 use std::slice;
 
 use crate::Array;
+// trickery!!
+use crate::array::Allocator;
 
 pub struct Iter<I: Iterator, const D: usize> {
     pub(crate) size: [usize; D],
@@ -9,7 +11,7 @@ pub struct Iter<I: Iterator, const D: usize> {
 }
 
 impl<'a, T, const D: usize> Iter<slice::Iter<'a, T>, D> {
-    pub(crate) fn new(array: &'a Array<T, D>) -> Self {
+    pub(crate) fn new<A: Allocator>(array: &'a Array<T, D, A>) -> Self {
         Self {
             size: array.size,
             ptr: [0; D],
@@ -19,7 +21,7 @@ impl<'a, T, const D: usize> Iter<slice::Iter<'a, T>, D> {
 }
 
 impl<'a, T, const D: usize> Iter<slice::IterMut<'a, T>, D> {
-    pub(crate) fn new_mut(array: &'a mut Array<T, D>) -> Self {
+    pub(crate) fn new_mut<A: Allocator>(array: &'a mut Array<T, D, A>) -> Self {
         Self {
             size: array.size,
             ptr: [0; D],

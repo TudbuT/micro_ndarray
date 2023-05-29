@@ -1,3 +1,5 @@
+#![cfg_attr(feature = "allocator", feature(allocator_api))]
+
 mod array;
 mod iterator;
 #[cfg(feature = "vec_split")]
