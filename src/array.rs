@@ -108,14 +108,21 @@ mod no_alloc {
 pub use no_alloc::*;
 #[cfg(feature = "allocator")]
 mod alloc {
+    // this is the macro that makes me throw up.
     macro_rules! insert_functions {
+        // matches a trait constraints declaration followed by a function definition with one argument separated using ;. this argument is the allocator.
         ($($t:ident),*: pub fn $name:tt $( < $($targs_t:tt $(: $targs_constraint:tt)?),+ > )? ( $($arg_name:ident : $arg_type:ty),*; $alloc:ident: A ) -> $ret:tt $block:tt) => {
+            // implements for ANY allocator
             impl<T: $($t + )*, const D: usize, A: Allocator> Array<T, D, A> {
+                // the function that was given as input. uses `replace!` to do $name_in, which isnt possible normally.
                 ::ident_concat::replace!{p_in $name _in:
                     pub fn p_in $( < $($targs_t $(: $targs_constraint)?, )* > )? ( $($arg_name: $arg_type, )* $alloc: A ) -> $ret $block
                 }
             }
+            // implements for the global allocator
             impl<T: $($t + )*, const D: usize> Array<T, D, Global> {
+                // the function that was given as input, but without the alloc argument. used to default to global allocator.
+                // once again, `replace!` is used to use $name_in.
                 pub fn $name $( < $($targs_t $(: $targs_constraint)?, )* > )? ( $($arg_name: $arg_type, )* ) -> $ret {
                     ::ident_concat::replace!(p_in $name _in: Self::p_in)($($arg_name,)* Global)
                 }
@@ -151,7 +158,7 @@ mod alloc {
         }
     });
 
-    insert_functions!(: pub fn new_by_in<F: (Fn() -> T)>(size: [usize; D], supplier: F; alloc: A) -> Self {
+    insert_functions!(: pub fn new_by<F: (Fn() -> T)>(size: [usize; D], supplier: F; alloc: A) -> Self {
             let mut l = 1;
             let mut stride = [0usize; D];
             for (i, dim) in size.into_iter().enumerate() {
@@ -170,7 +177,7 @@ mod alloc {
         }
     );
 
-    insert_functions!(: pub fn new_by_enumeration_in<F: (Fn(usize) -> T)>(size: [usize; D], supplier: F; alloc: A) -> Self {
+    insert_functions!(: pub fn new_by_enumeration<F: (Fn(usize) -> T)>(size: [usize; D], supplier: F; alloc: A) -> Self {
         let mut l = 1;
         let mut stride = [0usize; D];
         for (i, dim) in size.into_iter().enumerate() {
