@@ -43,7 +43,7 @@ mod no_alloc {
             }
         }
     }
-    impl<'a, T, const D: usize> Array<T, D> {
+    impl<T, const D: usize> Array<T, D> {
         pub fn new_by<F: Fn() -> T>(size: [usize; D], supplier: F) -> Self {
             let mut l = 1;
             let mut stride = [0usize; D];
