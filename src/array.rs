@@ -227,8 +227,7 @@ impl<'a, T, const D: usize, A: Allocator> Array<T, D, A> {
     #[inline]
     fn internal_get(&'a self, loc: [usize; D], panic: bool) -> Option<&'a T> {
         let mut real_loc = 0;
-        for (i, dim) in loc.iter().enumerate() {
-            let mut dim = *dim;
+        for (i, &(mut dim)) in loc.iter().enumerate() {
             if dim >= self.size[i] {
                 if panic {
                     panic!(
@@ -256,8 +255,7 @@ impl<'a, T, const D: usize, A: Allocator> Array<T, D, A> {
 
     pub unsafe fn get_unchecked(&'a self, loc: [usize; D]) -> &'a T {
         let mut real_loc = 0;
-        for (i, dim) in loc.iter().enumerate() {
-            let mut dim = *dim;
+        for (i, &(mut dim)) in loc.iter().enumerate() {
             if i == 0 {
                 real_loc += dim;
                 continue;
@@ -275,8 +273,7 @@ impl<'a, T, const D: usize, A: Allocator> Array<T, D, A> {
     #[inline]
     fn internal_get_mut(&'a mut self, loc: [usize; D], panic: bool) -> Option<&'a mut T> {
         let mut real_loc = 0;
-        for (i, dim) in loc.iter().enumerate() {
-            let mut dim = *dim;
+        for (i, &(mut dim)) in loc.iter().enumerate() {
             if dim >= self.size[i] {
                 if panic {
                     panic!(
@@ -304,8 +301,7 @@ impl<'a, T, const D: usize, A: Allocator> Array<T, D, A> {
 
     pub unsafe fn get_unchecked_mut(&'a mut self, loc: [usize; D]) -> &'a mut T {
         let mut real_loc = 0;
-        for (i, dim) in loc.iter().enumerate() {
-            let mut dim = *dim;
+        for (i, &(mut dim)) in loc.iter().enumerate() {
             if i == 0 {
                 real_loc += dim;
                 continue;
