@@ -10,7 +10,7 @@ checksum = "1426cdce2049b1d284dca790523f2562f4597a9d2cb4406827950048bb4a0392"
 
 [[package]]
 name = "micro_ndarray"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "ident_concat",
  "vec_split",
