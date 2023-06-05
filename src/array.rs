@@ -88,19 +88,22 @@ mod no_alloc {
         }
 
         /// Reinterprets a 1D array as an ND Array with indexing `x + y * size_x + z * size_x * size_y` etc. This is a zero-cost operation.
-        pub fn from_flat(array: Vec<T>, size: [usize; D]) -> Self {
+        pub fn from_flat(array: Vec<T>, size: [usize; D]) -> Option<Self> {
             let mut l = 1;
             let mut stride = [0usize; D];
             for (i, dim) in size.into_iter().enumerate() {
                 stride[i] = l;
                 l *= dim;
             }
-            Self {
+            if l != array.len() {
+                return None;
+            }
+            Some(Self {
                 data: array,
                 size,
                 stride,
                 phantom_a: PhantomData,
-            }
+            })
         }
     }
 }
@@ -176,23 +179,22 @@ mod alloc {
     });
 
     insert_functions!(: pub fn new_by<F: (Fn() -> T)>(size: [usize; D], supplier: F; alloc: A) -> Self {
-            let mut l = 1;
-            let mut stride = [0usize; D];
-            for (i, dim) in size.into_iter().enumerate() {
-                stride[i] = l;
-                l *= dim;
-            }
-            let mut r = Self {
-                size,
-                stride,
-                data: Vec::with_capacity_in(l, alloc),
-            };
-            for _ in 0..l {
-                r.data.push(supplier());
-            }
-            r
+        let mut l = 1;
+        let mut stride = [0usize; D];
+        for (i, dim) in size.into_iter().enumerate() {
+            stride[i] = l;
+            l *= dim;
         }
-    );
+        let mut r = Self {
+            size,
+            stride,
+            data: Vec::with_capacity_in(l, alloc),
+        };
+        for _ in 0..l {
+            r.data.push(supplier());
+        }
+        r
+    });
 
     insert_functions!(: pub fn new_by_enumeration<F: (Fn(usize) -> T)>(size: [usize; D], supplier: F; alloc: A) -> Self {
         let mut l = 1;
@@ -219,18 +221,21 @@ mod alloc {
         }
 
         /// Reinterprets a 1D array as an ND Array with indexing `x + y * size_x + z * size_x * size_y` etc. This is a zero-cost operation.
-        pub fn from_flat(array: Vec<T, A>, size: [usize; D]) -> Self {
+        pub fn from_flat(array: Vec<T, A>, size: [usize; D]) -> Option<Self> {
             let mut l = 1;
             let mut stride = [0usize; D];
             for (i, dim) in size.into_iter().enumerate() {
                 stride[i] = l;
                 l *= dim;
             }
-            Self {
+            if l != array.len() {
+                return None;
+            }
+            Some(Self {
                 data: array,
                 size,
                 stride,
-            }
+            })
         }
     }
 }
