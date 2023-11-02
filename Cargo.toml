@@ -1,6 +1,6 @@
 [package]
 name = "micro_ndarray"
-version = "0.6.0"
+version = "0.6.1"
 edition = "2021"
 repository = "https://github.com/tudbut/micro_ndarray"
 license = "MIT"

@@ -10,6 +10,7 @@ mod no_alloc {
     use std::marker::PhantomData;
 
     pub trait Allocator {}
+    #[derive(Clone, Copy)]
     pub struct Global;
     impl Allocator for Global {}
 

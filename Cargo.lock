@@ -4,13 +4,13 @@ version = 3
 
 [[package]]
 name = "ident_concat"
-version = "0.2.1"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1426cdce2049b1d284dca790523f2562f4597a9d2cb4406827950048bb4a0392"
+checksum = "036f59fb8c94121b07f1865beebfe61c15d3a874f0d1d3a2db737cdb2e98d412"
 
 [[package]]
 name = "micro_ndarray"
-version = "0.5.1"
+version = "0.6.1"
 dependencies = [
  "ident_concat",
  "vec_split",
